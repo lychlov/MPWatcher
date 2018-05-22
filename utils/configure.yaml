@@ -1,0 +1,5 @@
+TARGET_MP:
+    - MP: "人民网"
+    - MP: "新华社"
+
+IMG_STORE: "D:/PyCharmProjects/IMG_STORE"
