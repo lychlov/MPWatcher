@@ -11,7 +11,8 @@
 -------------------------------------------------
 """
 from wxpy import *
-
+from time import sleep
+from crawler.article_tasks import crawl_article
 from utils import MP_ACCOUNT
 
 bot = Bot(cache_path=True,qr_path='')
@@ -50,23 +51,25 @@ def auto_add_mps(msg):
     if msg.articles is not None:
         for article in msg.articles:
             content_url = article.url
-            title = article.title
-            summary = article.summary
-            cover_url = article.cover
-            receive_time = msg.receive_time
-            alert_msg = "接收到推文来自：%s\n标题：%s\n url:%s" % (msg.sender.name, title, content_url)
+            temp_dict = dict()
+            temp_dict['title'] = article.title
+            temp_dict['summary'] = article.summary
+            temp_dict['cover'] = article.cover
+            temp_dict['receive_time'] = msg.receive_time
+            temp_dict['account'] = msg.sender.name
+
+            alert_msg = "接收到推文来自：%s\n标题：%s\n url:%s" % (msg.sender.name, article.title, content_url)
             # 通知用户接受文章
-            bot.self.send(alert_msg)
+            bot.file_helper.send(alert_msg)
             # 调用爬取任务
+            crawl_article(url=content_url, dict_info=temp_dict)
+            sleep(60)
 
-    my_mp_msg = msg
-
-
-# @bot.register(except_self=False)
-# def print_group_msg(msg):
-#     print(msg)
-
-
-# 南周知道 : 儿童性早熟真会和拉丁舞扯上关系？ (Sharing)
+# temp_dict = {"title": "政变四周年，曼谷反军方大示威今日正式爆发！",
+#              "summary": 'jianjie',
+#              "cover": "http://sdfsdf",
+#              "receive_time": "2018-05-23 23:23:23",
+#              "account": '泰国网'}
+# crawl_article(url=url, dict_info=temp_dict)
 
 embed()

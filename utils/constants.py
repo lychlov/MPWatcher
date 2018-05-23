@@ -22,6 +22,10 @@ with open(config_path, encoding='utf-8') as f:
 cf = load(cont)
 
 
+def get_mongo_uri():
+    return cf.get("MONGO_URI", '')
+
+
 def get_mp_accounts():
     return cf.get("TARGET_MP", [])
 

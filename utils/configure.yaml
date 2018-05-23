@@ -1,5 +1,17 @@
 TARGET_MP:
     - MP: "人民网"
     - MP: "新华社"
+    - MP: "泰国星暹日报"
+    - MP: "泰国世界日报"
+    - MP: "泰国网"
 
-IMG_STORE: "D:/PyCharmProjects/IMG_STORE"
+
+
+#IMG_STORE: "D:/PyCharmProjects/IMG_STORE"
+IMG_STORE: "/home/docker/work_space/IMG_STORE"
+
+
+MYSQL_CONNECT: ''
+
+MONGO_URI: 'mongodb://czk:czk10101@127.0.0.1/test'
+
