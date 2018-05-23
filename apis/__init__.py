@@ -10,5 +10,3 @@
                    2018/5/22:
 -------------------------------------------------
 """
-from .MPS import MP_ACCOUNT
-from .constants import get_header, get_img_store, get_mp_accounts, get_mongo_uri,get_true_video_api_url
