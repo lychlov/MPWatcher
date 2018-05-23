@@ -15,7 +15,9 @@ from time import sleep
 from crawler.article_tasks import crawl_article
 from utils import MP_ACCOUNT
 
-bot = Bot(cache_path=True,qr_path='')
+logger = logging.getLogger(__name__)
+
+bot = Bot(cache_path=True, qr_path='')
 bot.self.add()
 bot.self.accept()
 
@@ -48,22 +50,24 @@ def auto_add_mps(msg):
         # return
     if msg.articles is None:
         return
-    if msg.articles is not None:
-        for article in msg.articles:
-            content_url = article.url
-            temp_dict = dict()
-            temp_dict['title'] = article.title
-            temp_dict['summary'] = article.summary
-            temp_dict['cover'] = article.cover
-            temp_dict['receive_time'] = msg.receive_time
-            temp_dict['account'] = msg.sender.name
+    article_dicts = []
+    for article in msg.articles:
+        temp_dict = dict()
+        temp_dict['url'] = article.url
+        temp_dict['title'] = article.title
+        temp_dict['summary'] = article.summary
+        temp_dict['cover'] = article.cover
+        temp_dict['receive_time'] = msg.receive_time
+        temp_dict['account'] = msg.sender.name
+        alert_msg = "接收到推文来自：%s\n标题：%s\n url:%s" % (msg.sender.name, article.title, article.url)
+        # 通知用户接受文章
+        article_dicts.append(temp_dict)
+        bot.file_helper.send(alert_msg)
+        # 调用爬取任务
+        # print("启动爬虫：%s" % article.title)
+    # print(article_dicts)
+    crawl_article(article_dicts)
 
-            alert_msg = "接收到推文来自：%s\n标题：%s\n url:%s" % (msg.sender.name, article.title, content_url)
-            # 通知用户接受文章
-            bot.file_helper.send(alert_msg)
-            # 调用爬取任务
-            crawl_article(url=content_url, dict_info=temp_dict)
-            sleep(60)
 
 # temp_dict = {"title": "政变四周年，曼谷反军方大示威今日正式爆发！",
 #              "summary": 'jianjie',
