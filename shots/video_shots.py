@@ -1,5 +1,8 @@
+from apis.use_api import get_article_info
 from crawler.article_tasks import download_videos
 import _thread
+url = 'https://mp.weixin.qq.com/s?__biz=MzU0MjQ1ODQxMA==&mid=2247483940&idx=1&sn=8ad01dc2c4305993f861a7bea1f16137&chksm=fb1b1561cc6c9c7745c9eb4d5b7eb10e81eeec882b4c33fc4ada783b7ac20cbf00bea8896954&mpshare=1&scene=1&srcid=0507ZVlFoGCAsgxRyQ3Xdp80&pass_ticket=HWZMx5AHq59uTXZQp9X91Qxlbq0loKsy%2FEUaHDPvT1iJL%2FflpXc4bmButMhmEme3#rd'
+# url = 'https://mp.weixin.qq.com/s?__biz=MzAwMDI2MjU1Ng==&mid=2650495904&idx=1&sn=4b980f1f42dd852fbd8b8079f5807f3c&chksm=82e45353b593da457efd8eaa2157b9a6a950f39dc21d3d9519cd4cf369f330370e8c5033bb08&mpshare=1&scene=1&srcid=0523vcBvLDobWeoXMAZjeU9b&pass_ticket=N0owVjmLJQsStOHKTn5v%2BLwmBqT5AvSKO6NQgn4yslQOaDmH3VIaaQJvEmMJK6OT#rd'
 
 temp_dict = {"title": "政变四周年，曼谷反军方大示威今日正式爆发！",
              "summary": 'jianjie',
@@ -39,4 +42,7 @@ picture_urls_temp = [
     'https://mmbiz.qpic.cn/mmbiz_jpg/nSCFwRAl6zs1UndkfCmghhRXHZ9tmI2In35oobHhyicJVtN7ECBnuV1KAia73Pj3XBACfyev3ePlUF839WaCsX8Q/640?wx_fmt=jpeg']
 
 # download_videos(temp_dict, '/Users/zhikuncheng/devspace/IMG_STORE', video_urls)
-_thread.start_new_thread(download_videos, (temp_dict, '/Users/zhikuncheng/devspace/IMG_STORE', video_urls))
+# _thread.start_new_thread(download_videos, (temp_dict, '/Users/zhikuncheng/devspace/IMG_STORE', video_urls))
+
+res = get_article_info(url)
+print(res)

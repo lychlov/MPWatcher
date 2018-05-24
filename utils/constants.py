@@ -22,6 +22,10 @@ with open(config_path, encoding='utf-8') as f:
 cf = load(cont)
 
 
+def get_article_info_api_url():
+    return cf.get('ARTICLE_INFO_API_URL', '')
+
+
 def get_true_video_api_url():
     return cf.get('TRUE_VIDEO_API_URL', '')
 

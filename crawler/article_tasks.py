@@ -21,15 +21,9 @@ import re
 import requests
 from lxml import etree
 
-from apis.use_api import get_true_video_url
+from apis.use_api import get_true_video_url, get_article_info
 from db.mongodb import MongoDB
 from utils import get_header, get_img_store
-
-
-# url = 'https://mp.weixin.qq.com/s?__biz=MzU0MjQ1ODQxMA==&mid=2247483940&idx=1&sn=8ad01dc2c4305993f861a7bea1f16137&chksm=fb1b1561cc6c9c7745c9eb4d5b7eb10e81eeec882b4c33fc4ada783b7ac20cbf00bea8896954&mpshare=1&scene=1&srcid=0507ZVlFoGCAsgxRyQ3Xdp80&pass_ticket=HWZMx5AHq59uTXZQp9X91Qxlbq0loKsy%2FEUaHDPvT1iJL%2FflpXc4bmButMhmEme3#rd'
-
-
-# url = 'https://mp.weixin.qq.com/s?__biz=MzAwMDI2MjU1Ng==&mid=2650495904&idx=1&sn=4b980f1f42dd852fbd8b8079f5807f3c&chksm=82e45353b593da457efd8eaa2157b9a6a950f39dc21d3d9519cd4cf369f330370e8c5033bb08&mpshare=1&scene=1&srcid=0523vcBvLDobWeoXMAZjeU9b&pass_ticket=N0owVjmLJQsStOHKTn5v%2BLwmBqT5AvSKO6NQgn4yslQOaDmH3VIaaQJvEmMJK6OT#rd'
 
 
 # content_url = article.url
@@ -99,7 +93,6 @@ def crawl_article(dicts):
     """
     :param dicts: 
     """
-    # print(dicts)
     for article_dict in dicts:
         sess = requests.Session()
         headers = get_header()
@@ -107,7 +100,6 @@ def crawl_article(dicts):
         print("开始爬取：%s" % url)
         res = sess.get(url, headers=headers)
         selector = etree.HTML(res.text)
-        # print(res.text)
         rich_media = selector.xpath(
             "//div[@class='rich_media_inner']/div[@id='page-content']/div[1]/div[2]")[0]
         author = selector.xpath("//div[@id='meta_content']/span[@class='rich_media_meta rich_media_meta_text']")[
@@ -120,20 +112,23 @@ def crawl_article(dicts):
         picture_urls = selector.xpath("//img/@data-src")
         # 视频集合
         video_urls = selector.xpath("//iframe[@class='video_iframe']/@data-src")
+        json_info = get_article_info(url)
+        if json_info is not None:
+            like_num = json_info.get('data', {}).get('zannums', 0)
+            read_num = json_info.get('data', {}).get('readnums', 0)
         mongodb = MongoDB()
+
         article_item = {'title': article_dict.get('title', ""), 'author': author,
                         'summary': article_dict.get('summary', ""),
-                        'cover': article_dict.get('cover', ""), 'content': content, 'like_num': 0, 'read_num': 0,
+                        'cover': article_dict.get('cover', ""), 'content': content, 'like_num': like_num,
+                        'read_num': read_num,
                         'comment': "", 'url': url, 'receive_time': article_dict.get('receive_time', ""),
                         'account': article_dict.get('account', ""), '__biz': __biz}
         mongodb.add("wechat_article", article_item)
         try:
             download_pictures(dict_info=article_item, picture_urls=picture_urls)
             _thread.start_new_thread(download_videos, (article_item, '', video_urls))
-
         except:
             print("下载多媒体内容失败")
         sleep(60)
     pass
-
-# download_pictures(title='水电费克里斯反馈算法开始是劳动法几十块了房间', biz="KLJSKLASJDKLJSKLD==")
